@@ -31,3 +31,15 @@ ENV/
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+# Rust
+target/
+debug/
+release/
+*.rs.bk
+*.rlib
+
+# Tests and temporary data
+tests/temp/
+*.wav
+*.pcm

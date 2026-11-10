@@ -39,7 +39,8 @@ flowchart TD
         G & H --> I["Opus Decoder"]
         I --> J["High-Pass Filter (80 Hz)"]
         J --> K["DeepFilterNet 3 (AI Denoise)\n+ VAD Power Saver"]
-        K --> L["Voice Strip (3-Band EQ + Comp)"]
+        K --> FX["Streamer Fun FX\n(Autotune, Anime, Ardilla, Radio, Beep)"]
+        FX --> L["Voice Strip (3-Band EQ + Comp)"]
         L --> M["Virtual Audio Driver (WASAPI / PipeWire)"]
         M --> N["Apps (Discord, OBS, Zoom, Games)"]
         
@@ -190,8 +191,51 @@ Implementar una cadena DSP fija y ultraligera (<300 líneas en C++ o Rust con fi
 * El micrófono básico con conexión Wi-Fi/USB y DeepFilterNet se mantiene gratuito y sin cortes abruptos.
 * Se ofrece una versión **OpenMic Pro** (compra única o suscripción económica) que desbloquea:
   * La **Voice Strip completa** (Compresor + Ecualizador de 3 bandas).
+  * El paquete completo de **Streamer Fun FX & Autotune** (Anime, Autotune, presets avanzados).
   * El **Canal de Audio Inverso** (escuchar la PC en el teléfono).
   * Widgets de escritorio y modo Push-to-Talk avanzado.
+
+---
+
+### Módulo I: Streamer Fun FX & Voice Changer (Meme, Autotune y Anime/VTuber)
+
+#### I.1. Propósito y Factor Viral
+Herramientas consolidadas como *Voicemod* o *Clownfish* sufren de problemas graves: alto consumo de CPU/RAM, instaladores pesados (>200 MB), paywalls agresivos o interfaces anticuadas. PocketMic integra un motor de transformación de voz en tiempo real ejecutado en el host de PC, controlado de forma remota y táctil desde la pantalla del teléfono como si fuera un **Stream Deck / Soundboard**.
+
+#### I.2. Catálogo de Efectos de Voz
+1. **Autotune (Hard-Tune / Trap / T-Pain):**
+   * Detección de tono fundamental ($f_0$) en tiempo real (algoritmo YIN / MPM).
+   * Cuantización a la nota musical más cercana en escalas seleccionables (Cromática, Mayor, Menor, Pentatónica).
+   * Velocidad de corrección inmediata (*Retune Speed* = 0 ms) para producir el clásico timbre robótico/melódico usado por streamers.
+2. **Voz Anime / "Monita China" (Anime Girl / VTuber FX):**
+   * *El problema del pitch clásico:* Un pitch-shift simple a los agudos crea el efecto "ardilla" no deseado.
+   * *La solución acústica:* **Pitch Shifting (+4 a +6 semitonos) + Formant Scaling independiente (1.18x - 1.25x)**. Esto preserva la inteligibilidad y simula el acortamiento físico del tracto vocal característico de voces anime/femeninas juveniles sin sonar a ardilla.
+3. **Ardilla / Helio (*Pitch Up*):** Transposición tonal pura a +8 a +12 semitonos con preservación de velocidad temporal.
+4. **Demonio / Monstruo (*Deep Voice*):** Transposición a -7 a -12 semitonos con enriquecimiento de sub-armónicos para voz siniestra.
+5. **Walkie-Talkie / Radio Táctica:** Filtro paso banda de 300 Hz a 3.000 Hz, saturación armónica analógica (*soft clipping*) y ráfaga de estática con *"Roger Beep"* al soltar la transmisión.
+6. **Robot / Sci-Fi Synth:** Modulación en anillo (*Ring Modulation*) contra oscilador portador senoidal a 60–90 Hz.
+7. **Megáfono / Altavoz:** Resonancia en frecuencias medias (1.5 kHz) con leve sobremodulación.
+8. **Catedral / Cueva (*Épico Reverb*):** Reverberación Schroeder / Freeverb con decaimiento largo (*tail*) para momentos dramáticos.
+9. **Bleep de Censura (*Censor Beep*):** Tono senoidal puro de 1.000 Hz que conmuta instantáneamente el micrófono al mantener pulsado un botón táctil.
+
+#### I.3. Control Táctil "Stream Deck" en el Móvil
+* Cuadrícula en la app móvil con botones táctiles grandes:
+  * Modo **Toggle** (un toque enciende/apaga el efecto).
+  * Modo **Push-to-Effect** (el efecto actúa únicamente mientras se mantiene pulsado el botón).
+* La app envía un mensaje de control UDP de apenas 4 bytes al PC, manteniendo la latencia de conmutación en < 2 ms sin tocar teclado o ratón durante una partida o transmisión en vivo.
+
+```
+┌──────────────────────────────────────────────┐
+│  🎙️ POCKETMIC                      [LIVE 🔴] │
+├──────────────────────────────────────────────┤
+│  [  🎤 Normal  ]    [  🎵 Autotune ]         │
+│  [  🎀 Anime   ]    [  🐿️ Ardilla  ]         │
+│  [  👹 Demonio ]    [  📻 Radio    ]         │
+│  [  🤖 Robot   ]    [  ⛪ Catedral ]         │
+├──────────────────────────────────────────────┤
+│  [             🚨 BLEEP (MANTENER)         ] │
+└──────────────────────────────────────────────┘
+```
 
 ---
 
@@ -213,8 +257,9 @@ gantt
     Sidetone Local con audífonos            :f2_3, after f1_4, 3d
     Flip-to-Mute y Push-to-Talk             :f2_4, after f2_3, 3d
 
-    section Fase 3: Ventajas Exclusivas
-    Android AOA (USB sin modo desarrollador):f3_1, after f2_2, 5d
+    section Fase 3: Streamer FX y Ventajas
+    Streamer Fun FX (Autotune, Anime, Meme) :f3_0, after f2_2, 4d
+    Android AOA (USB sin modo desarrollador):f3_1, after f3_0, 5d
     iOS USB Tunneling vía usbmuxd           :f3_2, after f3_1, 6d
     Canal de Audio Inverso (PC a Móvil)     :f3_3, after f3_2, 5d
 ```
@@ -230,6 +275,7 @@ gantt
 | **P2** | **Flip-to-Mute y Push-to-Talk táctil** | 2 días | ⭐⭐⭐⭐ (Diferenciador clave de UX) |
 | **P2** | **Voice Strip Compressor / Leveler** | 2-3 días | ⭐⭐⭐⭐⭐ (Evita gritos y nivela susurros) |
 | **P2** | **VAD para reposo de DeepFilterNet** | 2 días | ⭐⭐⭐⭐ (Ahorro de CPU en la PC) |
+| **P2** | **Streamer Fun FX (Autotune, Anime, Meme)** | 3-4 días | ⭐⭐⭐⭐⭐ (Factor viral masivo para Discord/Streamers) |
 | **P3** | **Android USB vía protocolo AOA** | 4-5 días | ⭐⭐⭐⭐⭐ (Plug & Play real por cable) |
 | **P3** | **iOS USB vía `usbmuxd` (PeerTalk)** | 5-6 días | ⭐⭐⭐⭐⭐ (Exclusividad total en el mercado) |
 | **P3** | **Audio Inverso (PC $\rightarrow$ Móvil)** | 4-5 días | ⭐⭐⭐⭐ (Audífono inalámbrico de emergencia) |

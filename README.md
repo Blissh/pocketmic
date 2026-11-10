@@ -29,6 +29,7 @@ Este repositorio contiene la investigación de mercado, ingeniería inversa comp
    * Matriz comparativa vs AudioRelay y WO Mic.
 2. **[Propuestas de Mejora y Arquitectura Lean de PocketMic](PROPUESTAS_Y_ARQUITECTURA_OPENMIC.md):**
    * *Studio Voice Strip* nativa integrada (High-Pass 80Hz, Leveler y EQ de 3 bandas).
+   * *Streamer Fun FX & Soundboard táctil* (Autotune en tiempo real, timbre Anime/VTuber con formantes, Ardilla, Radio táctica y Bleep de censura).
    * Sidetone local con audífonos (monitoreo en tiempo real con latencia cero).
    * Canal dúplex opcional de audio inverso (PC a smartphone).
    * Selector de cápsula física de micrófono (evita obstrucción en atril/mesa).
@@ -56,7 +57,7 @@ pocketmic/
 ## 📋 Hoja de Ruta (Roadmap Resumido)
 
 - [ ] **Fase 1 (MVP Core):** Captura en móvil (Google Oboe C++ / CoreAudio) + Enlace UDP Opus + Driver virtual WASAPI/PipeWire.
-- [ ] **Fase 2 (Calidad y UX):** Integración DeepFilterNet 3 + Voice Strip DSP + Sidetone local + Gesto Flip-to-Mute.
+- [ ] **Fase 2 (Calidad, FX y UX):** Integración DeepFilterNet 3 + Voice Strip DSP + Streamer Fun FX (Autotune, Anime, Meme) + Sidetone local + Flip-to-Mute.
 - [ ] **Fase 3 (Conectividad Avanzada):** Modo Android AOA + Túnel USB en iOS + Canal Dúplex de audio inverso.
 
 ---

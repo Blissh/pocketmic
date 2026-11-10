@@ -1,0 +1,21 @@
+[package]
+name = "pocketmic-daemon"
+version = "1.0.0"
+edition = "2021"
+authors = ["PocketMic Team"]
+description = "High-performance, ultra-low latency virtual microphone daemon for PocketMic"
+
+[dependencies]
+cpal = "0.15"
+ringbuf = "0.4"
+socket2 = "0.5"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+byteorder = "1.5"
+
+[dev-dependencies]
+tempfile = "3.8"
+
+[[bin]]
+name = "pocketmic-daemon"
+path = "src/main.rs"
